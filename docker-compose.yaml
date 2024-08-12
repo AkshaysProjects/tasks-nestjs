@@ -1,4 +1,26 @@
 services:
+  api:
+    container_name: tasks-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.tasksapi.loadbalancer.server.port=3000"
+      - "traefik.http.services.tasksapi.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.tasksapi-http.entrypoints=web"
+      - "traefik.http.routers.tasksapi-http.rule=Host(`tasks.akshaykakatkar.tech`)"
+      - "traefik.http.routers.tasksapi-https.entrypoints=websecure"
+      - "traefik.http.routers.tasksapi-https.rule=Host(`tasks.akshaykakatkar.tech`)"
+      - "traefik.http.routers.tasksapi-https.tls=true"
+      - "traefik.http.routers.tasksapi-https.tls.certresolver=production"
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    networks:
+      - docker
+
   mysql:
     image: mysql:latest
     container_name: mysql
@@ -8,3 +30,9 @@ services:
       - '${MYSQL_PORT}:3306'
     volumes:
       - ./data/mysql:/var/lib/mysql
+    networks:
+      - docker
+
+networks:
+  docker:
+    external: true
