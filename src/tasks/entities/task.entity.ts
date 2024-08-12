@@ -1,6 +1,14 @@
 import { AbstractEntity } from 'src/database/abstract.entity';
 import { TaskStatus } from 'src/tasks/enums/task-status.enum';
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { Member } from 'src/teams/entities/member.entity';
+import { Team } from 'src/teams/entities/team.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Task extends AbstractEntity<Task> {
@@ -15,6 +23,12 @@ export class Task extends AbstractEntity<Task> {
 
   @Column({ default: TaskStatus.Pending })
   status: TaskStatus;
+
+  @ManyToOne(() => Team, (team) => team.tasks, { nullable: true })
+  team: Team;
+
+  @ManyToOne(() => Member, (member) => member.tasks, { nullable: true })
+  assignee: Member;
 
   @CreateDateColumn()
   created_at: Date;

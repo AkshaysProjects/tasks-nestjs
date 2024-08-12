@@ -1,4 +1,5 @@
 import { AbstractEntity } from 'src/database/abstract.entity';
+import { Task } from 'src/tasks/entities/task.entity';
 import { Member } from 'src/teams/entities/member.entity';
 import { Column, Entity, JoinTable, OneToMany } from 'typeorm';
 
@@ -13,4 +14,8 @@ export class Team extends AbstractEntity<Team> {
   @OneToMany(() => Member, (member) => member.team, { cascade: true })
   @JoinTable()
   members: Member[];
+
+  @OneToMany(() => Task, (task) => task.team, { cascade: true })
+  @JoinTable()
+  tasks: Task[];
 }

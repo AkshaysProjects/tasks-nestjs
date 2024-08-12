@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { AssignTaskDto } from 'src/tasks/dto/assign-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TasksService } from './tasks.service';
@@ -38,5 +39,15 @@ export class TasksController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.remove(+id);
+  }
+
+  @Post(':id/assign')
+  assign(@Param('id') id: string, @Body() assignTaskDto: AssignTaskDto) {
+    return this.tasksService.assign(+id, assignTaskDto);
+  }
+
+  @Post(':id/unassign')
+  unassign(@Param('id') id: string) {
+    return this.tasksService.unassign(+id);
   }
 }

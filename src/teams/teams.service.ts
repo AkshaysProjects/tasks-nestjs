@@ -10,13 +10,13 @@ import { UpdateTeamDto } from './dto/update-team.dto';
 @Injectable()
 export class TeamsService {
   constructor(
-    @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
+    @InjectRepository(Team) private readonly teamsRepository: Repository<Team>,
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
   ) {}
 
   create(createTeamDto: CreateTeamDto) {
-    return this.teamRepository.save(createTeamDto).catch((error) => {
+    return this.teamsRepository.save(createTeamDto).catch((error) => {
       if (
         error instanceof TypeORMError &&
         error.message.startsWith('Duplicate entry') &&
@@ -29,18 +29,18 @@ export class TeamsService {
   }
 
   findAll() {
-    return this.teamRepository.find();
+    return this.teamsRepository.find();
   }
 
   findOne(id: number) {
-    return this.teamRepository.findOne({
+    return this.teamsRepository.findOne({
       where: { id },
       relations: { members: true },
     });
   }
 
   update(id: number, updateTeamDto: UpdateTeamDto) {
-    return this.teamRepository.update(id, updateTeamDto).catch((error) => {
+    return this.teamsRepository.update(id, updateTeamDto).catch((error) => {
       if (
         error instanceof TypeORMError &&
         error.message.startsWith('Duplicate entry') &&
@@ -53,7 +53,7 @@ export class TeamsService {
   }
 
   remove(id: number) {
-    return this.teamRepository.delete(id);
+    return this.teamsRepository.delete(id);
   }
 
   async addMembers(id: number, members: CreateMemberDto[]) {
