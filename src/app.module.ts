@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { TasksModule } from './tasks/tasks.module';
+import { TeamsModule } from './teams/teams.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TasksModule } from './tasks/tasks.module';
     }),
     DatabaseModule,
     TasksModule,
+    TeamsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
