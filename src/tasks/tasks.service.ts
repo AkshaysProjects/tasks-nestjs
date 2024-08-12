@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { AssignTaskDto } from 'src/tasks/dto/assign-task.dto';
 import { Task } from 'src/tasks/entities/task.entity';
+import { TaskStatus } from 'src/tasks/enums/task-status.enum';
 import { Team } from 'src/teams/entities/team.entity';
 import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -34,7 +35,11 @@ export class TasksService {
   }
 
   update(id: number, updateTaskDto: UpdateTaskDto) {
-    return this.tasksRepository.update({ id }, updateTaskDto);
+    if (updateTaskDto.status === TaskStatus.Completed)
+      updateTaskDto.completed_at = new Date();
+    return this.tasksRepository
+      .update({ id }, updateTaskDto)
+      .then(() => this.tasksRepository.findOneBy({ id }));
   }
 
   remove(id: number) {
@@ -58,10 +63,21 @@ export class TasksService {
     if (!team.members.some((member) => member.id === assignTaskDto.assignee))
       throw new NotFoundException('Assignee is not a member of the team');
 
-    return this.tasksRepository.update(
-      { id },
-      { team, assignee: { id: assignTaskDto.assignee } },
-    );
+    return this.tasksRepository
+      .update(
+        { id },
+        {
+          status: TaskStatus.Assigned,
+          team,
+          assignee: { id: assignTaskDto.assignee },
+        },
+      )
+      .then(() =>
+        this.tasksRepository.findOne({
+          where: { id },
+          relations: { team: true, assignee: true },
+        }),
+      );
   }
 
   async unassign(id: number) {
@@ -71,9 +87,16 @@ export class TasksService {
 
     if (!task.assignee) throw new ConflictException('Task not assigned');
 
-    return this.tasksRepository.update(
-      { id },
-      { team: undefined, assignee: undefined },
-    );
+    return this.tasksRepository
+      .update(
+        { id },
+        { status: TaskStatus.Pending, team: null, assignee: null },
+      )
+      .then(() =>
+        this.tasksRepository.findOne({
+          where: { id },
+          relations: { team: true, assignee: true },
+        }),
+      );
   }
 }

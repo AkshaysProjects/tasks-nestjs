@@ -25,10 +25,10 @@ export class Task extends AbstractEntity<Task> {
   status: TaskStatus;
 
   @ManyToOne(() => Team, (team) => team.tasks, { nullable: true })
-  team: Team;
+  team: Team | null;
 
   @ManyToOne(() => Member, (member) => member.tasks, { nullable: true })
-  assignee: Member;
+  assignee: Member | null;
 
   @CreateDateColumn()
   created_at: Date;
