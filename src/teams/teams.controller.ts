@@ -54,4 +54,12 @@ export class TeamsController {
   ) {
     return this.teamsService.removeMembers(+id, members);
   }
+
+  @Get(':teamId/member/:memberId/tasks')
+  findMemberTasks(
+    @Param('teamId') teamId: string,
+    @Param('memberId') memberId: string,
+  ) {
+    return this.teamsService.findMemberTasks(+teamId, +memberId);
+  }
 }

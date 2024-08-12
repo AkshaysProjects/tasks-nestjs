@@ -1,5 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from 'src/tasks/entities/task.entity';
 import { CreateMemberDto } from 'src/teams/dto/create-member.dto';
 import { Member } from 'src/teams/entities/member.entity';
 import { Team } from 'src/teams/entities/team.entity';
@@ -13,6 +14,7 @@ export class TeamsService {
     @InjectRepository(Team) private readonly teamsRepository: Repository<Team>,
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
+    @InjectRepository(Task) private readonly tasksRepository: Repository<Task>,
   ) {}
 
   create(createTeamDto: CreateTeamDto) {
@@ -123,5 +125,12 @@ export class TeamsService {
     }
 
     return { statusCode: 200, successfulDeletes: validMembers.length };
+  }
+
+  findMemberTasks(teamId: number, memberId: number) {
+    return this.tasksRepository.find({
+      where: { team: { id: teamId }, assignee: { id: memberId } },
+      relations: { team: true },
+    });
   }
 }
