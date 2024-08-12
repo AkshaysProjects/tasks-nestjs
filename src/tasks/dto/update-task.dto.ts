@@ -11,5 +11,5 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
 
   @Transform(({ value }) => dateTransformer(value))
   @IsDate()
-  due_date: Date;
+  due_date?: Date;
 }
