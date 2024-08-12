@@ -13,8 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.getOrThrow<string>('MYSQL_PASSWORD'),
         database: configService.getOrThrow<string>('MYSQL_DATABASE'),
         autoLoadEntities: true,
-        synchronize:
-          configService.getOrThrow<string>('NODE_ENV') !== 'production',
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
     }),
