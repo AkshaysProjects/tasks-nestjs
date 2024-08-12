@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsDateString, IsNotEmpty, IsString, Validate } from 'class-validator';
-import { dateTransformer, IsDateFormatValid } from 'src/utils/date';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { dateTransformer } from 'src/utils/date';
 
 export class CreateTaskDto {
   @IsNotEmpty()
@@ -11,8 +11,7 @@ export class CreateTaskDto {
   @IsString()
   description: string;
 
-  @Transform(({ value }) => dateTransformer(value), { toClassOnly: true })
-  @Validate(IsDateFormatValid)
-  @IsDateString()
+  @Transform(({ value }) => dateTransformer(value))
+  @IsDate()
   due_date: Date;
 }
