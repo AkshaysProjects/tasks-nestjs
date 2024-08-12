@@ -1,7 +1,7 @@
 import { AbstractEntity } from 'src/database/abstract.entity';
 import { Task } from 'src/tasks/entities/task.entity';
 import { Member } from 'src/teams/entities/member.entity';
-import { Column, Entity, JoinTable, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Team extends AbstractEntity<Team> {
@@ -11,11 +11,15 @@ export class Team extends AbstractEntity<Team> {
   @Column()
   description: string;
 
-  @OneToMany(() => Member, (member) => member.team, { cascade: true })
-  @JoinTable()
+  @OneToMany(() => Member, (member) => member.team, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   members: Member[];
 
-  @OneToMany(() => Task, (task) => task.team, { cascade: true })
-  @JoinTable()
+  @OneToMany(() => Task, (task) => task.team, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   tasks: Task[];
 }
